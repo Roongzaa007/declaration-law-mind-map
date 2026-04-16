@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Map กฎหมายแพ่ง - การแสดงเจตนา</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Noto+Serif+Thai:wght@400;700&display=swap');
+  :root {
+    --bg:#0d1117; --surface:#161b22; --card:#1e2530;
+    --gold:#f0c040; --red:#e05252; --blue:#4a9eff; --green:#4caf50;
+    --purple:#a78bfa; --orange:#fb923c; --teal:#2dd4bf; --yellow:#fbbf24;
+    --border:#30363d; --text:#e6edf3; --text-dim:#8b949e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+  /* HEADER */
+  .header{background:linear-gradient(135deg,#001a0a 0%,#0d1117 50%,#1a0d00 100%);border-bottom:2px solid var(--gold);padding:28px 24px 20px;text-align:center;position:relative;overflow:hidden}
+  .header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.15) 0%,transparent 60%)}
+  .header h1{font-family:'Noto Serif Thai',serif;font-size:clamp(1.3rem,3vw,2rem);color:var(--gold);letter-spacing:.5px;position:relative}
+  .header .sub{font-size:.9rem;color:var(--text-dim);margin-top:6px;position:relative}
+  .badge{display:inline-block;background:var(--gold);color:#000;font-weight:800;font-size:.72rem;padding:2px 10px;border-radius:20px;margin-bottom:8px;letter-spacing:1px}
+
+  /* DEFS */
+  .defs{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px;max-width:960px;margin:0 auto}
+  @media(max-width:640px){.defs{grid-template-columns:1fr}}
+  .def-card{background:var(--card);border-radius:10px;border-left:4px solid;padding:14px 16px;transition:transform .2s}
+  .def-card:hover{transform:translateY(-2px)}
+  .def-card.jit{border-color:var(--yellow)} .def-card.effect{border-color:var(--blue)}
+  .def-card h3{font-size:.95rem;font-weight:700;margin-bottom:6px}
+  .def-card.jit h3{color:var(--yellow)} .def-card.effect h3{color:var(--blue)}
+  .def-card p{font-size:.82rem;color:var(--text-dim);line-height:1.6}
+  .def-card strong{color:var(--text)}
+
+  /* TABS */
+  .tabs{display:flex;gap:8px;padding:0 20px;max-width:960px;margin:4px auto 0;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600;border:2px solid transparent;transition:all .25s;background:var(--card)}
+  .tab:hover{opacity:.85}
+
+  /* MAIN */
+  .main{max-width:960px;margin:0 auto;padding:0 20px 40px}
+  .section-block{display:none;animation:fadeUp .35s ease}
+  .section-block.show{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* TABLE */
+  .matrix-wrap{overflow-x:auto;margin-top:14px}
+  table{width:100%;border-collapse:collapse;font-size:.83rem}
+  thead tr{background:rgba(255,255,255,.05)}
+  th{padding:10px 12px;text-align:left;font-weight:700;font-size:.8rem;letter-spacing:.5px;border-bottom:2px solid var(--border);white-space:nowrap}
+  td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.03)}
+
+  /* CLICKABLE มาตรา */
+  .mat-num{
+    display:inline-flex;align-items:center;gap:4px;
+    font-weight:800;font-size:.9rem;
+    padding:4px 12px;border-radius:6px;min-width:46px;
+    cursor:pointer;transition:all .2s;position:relative;
+    border:1px solid transparent;
+  }
+  .mat-num:hover{transform:scale(1.08);filter:brightness(1.25);box-shadow:0 0 10px currentColor}
+  .mat-num .click-icon{font-size:.6rem;opacity:.7}
+
+  .effect-tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:4px;border:1px solid;margin-left:4px;vertical-align:middle;white-space:nowrap}
+
+  /* COLORS */
+  .c-red   {color:var(--red);   background:rgba(224,82,82,.12)}
+  .c-blue  {color:var(--blue);  background:rgba(74,158,255,.12)}
+  .c-green {color:var(--green); background:rgba(76,175,80,.12)}
+  .c-orange{color:var(--orange);background:rgba(251,146,60,.12)}
+  .c-yellow{color:var(--yellow);background:rgba(251,191,36,.12)}
+  .c-gold  {color:var(--gold);  background:rgba(240,192,64,.12)}
+  .border-red   {border-color:var(--red)}   .border-blue  {border-color:var(--blue)}
+  .border-green {border-color:var(--green)} .border-orange{border-color:var(--orange)}
+  .border-yellow{border-color:var(--yellow)}
+
+  /* SEC HEADER */
+  .sec-header{display:flex;align-items:center;gap:14px;padding:18px 0 10px}
+  .sec-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+  .sec-title h2{font-size:1.15rem;font-weight:800}
+  .sec-title p{font-size:.8rem;color:var(--text-dim);margin-top:2px}
+
+  /* NOTE */
+  .note{margin-top:10px;padding:12px 14px;border-radius:8px;font-size:.8rem;border:1px solid;line-height:1.7}
+
+  /* OVERVIEW */
+  .overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:14px}
+  .ov-card{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer}
+  .ov-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .ov-top{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+  .ov-icon{font-size:1.5rem} .ov-name{font-weight:800;font-size:1rem} .ov-type{font-size:.75rem;margin-top:2px}
+  .ov-body{padding:10px 16px 14px}
+  .ov-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.04)}
+  .ov-row:last-child{border:none} .ov-row .ov-label{color:var(--text-dim)}
+  .click-hint{text-align:center;font-size:.78rem;color:var(--text-dim);margin:6px 0 0;padding-bottom:8px}
+
+  /* ROW COLORS */
+  .row-void td{background:rgba(224,82,82,.06)}
+  .row-voidable td{background:rgba(251,146,60,.06)}
+  .row-valid td{background:rgba(76,175,80,.06)}
+  .row-special td{background:rgba(74,158,255,.06)}
+
+  /* FORMULA */
+  .formula-card{background:var(--card);border-radius:10px;border:2px dashed var(--gold);padding:14px 16px;margin-top:10px}
+  .formula-card h4{color:var(--gold);font-size:.9rem;margin-bottom:6px}
+  .formula-card p{font-size:.82rem;color:var(--text-dim);line-height:1.7}
+  .formula-card strong{color:var(--text)}
+
+  footer{text-align:center;font-size:.75rem;color:var(--text-dim);padding:20px;border-top:1px solid var(--border)}
+
+  /* ===== MODAL ===== */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;z-index:1000;
+    background:rgba(0,0,0,.78);backdrop-filter:blur(5px);
+    align-items:center;justify-content:center;padding:20px;
+  }
+  .modal-overlay.open{display:flex;animation:fadeIn .2s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  .modal-box{
+    background:#161b22;border-radius:16px;max-width:680px;width:100%;
+    max-height:88vh;overflow:hidden;display:flex;flex-direction:column;
+    border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,.7);
+    animation:slideUp .25s ease;
+  }
+  @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+  .modal-header{
+    padding:18px 20px 14px;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;
+  }
+  .modal-badge{display:inline-block;font-size:.73rem;font-weight:700;padding:3px 12px;border-radius:20px;margin-bottom:7px}
+  .modal-title{font-family:'Noto Serif Thai',serif;font-size:1.2rem;font-weight:700;line-height:1.4}
+  .modal-sub{font-size:.77rem;color:var(--text-dim);margin-top:5px}
+  .modal-close{
+    width:34px;height:34px;border-radius:8px;border:none;
+    background:rgba(255,255,255,.08);color:var(--text);font-size:1.1rem;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;transition:background .2s;margin-left:12px;
+  }
+  .modal-close:hover{background:rgba(255,255,255,.18)}
+
+  .modal-body{overflow-y:auto;padding:14px 20px 20px;display:flex;flex-direction:column;gap:12px}
+
+  .modal-sec{border-radius:10px;padding:14px 16px}
+  .modal-sec-title{font-size:.82rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+
+  /* Law box */
+  .law-box{background:rgba(240,192,64,.07);border:1px solid rgba(240,192,64,.25)}
+  .law-text{
+    font-size:.84rem;line-height:2;color:var(--text);
+    white-space:pre-line;
+    font-family:'Sarabun',sans-serif;
+  }
+  .law-num{
+    display:block;font-weight:800;font-size:1.05rem;
+    color:var(--gold);margin-bottom:8px;
+  }
+
+  /* Elements box */
+  .elem-box{background:rgba(74,158,255,.07);border:1px solid rgba(74,158,255,.2)}
+  .elem-box ol{padding-left:18px}
+  .elem-box li{font-size:.83rem;line-height:1.85;color:var(--text-dim);margin-bottom:6px}
+  .elem-box li strong{color:var(--text)}
+  .elem-box .sub-list{list-style:disc;margin-top:4px;padding-left:16px}
+  .elem-box .sub-list li{margin-bottom:2px}
+  .formula-note{font-size:.78rem;color:var(--text-dim);margin-top:10px;font-style:italic;border-top:1px solid rgba(255,255,255,.07);padding-top:8px}
+
+  /* Result box */
+  .result-box{background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.2)}
+  .r-pill{display:inline-block;font-size:.78rem;font-weight:700;padding:3px 12px;border-radius:20px;margin:0 5px 5px 0}
+  .r-void    {background:rgba(224,82,82,.2);   color:var(--red);   border:1px solid var(--red)}
+  .r-voidable{background:rgba(251,146,60,.2);  color:var(--orange);border:1px solid var(--orange)}
+  .r-valid   {background:rgba(76,175,80,.2);   color:var(--green); border:1px solid var(--green)}
+  .r-special {background:rgba(74,158,255,.2);  color:var(--blue);  border:1px solid var(--blue)}
+  .result-note{font-size:.82rem;color:var(--text-dim);margin-top:9px;line-height:1.7}
+  .result-note strong{color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeBg(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-badge" id="mBadge"></div>
+        <div class="modal-title" id="mTitle"></div>
+        <div class="modal-sub" id="mSub"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">ชุดวิชา 41214 กฎหมายแพ่ง 1 · มสธ.</div>
+  <h1>⚖️ Mind Map การแสดงเจตนา</h1>
+  <p class="sub">บรรพ 1 หมวด 4 · มาตรา 154–169 · จัดทำโดย จิราเมธ โปติ๊บ 6840030651 มหาวิทยาลัยสุโขทัยธรรมาธิราช</p>
+</div>
+
+<div class="defs">
+  <div class="def-card jit">
+    <h3>📢 การแสดงเจตนา คืออะไร?</h3>
+    <p>การที่บุคคลแสดงออกซึ่ง<strong>ความต้องการ (เจตนา)</strong>ภายในจิตใจออกมาสู่ภายนอก ในรูปของคำพูด การเขียน หรือกริยาท่าทาง เพื่อให้เกิด<strong>ผลทางกฎหมาย</strong> เป็นองค์ประกอบสำคัญของ "นิติกรรม"</p>
+  </div>
+  <div class="def-card effect">
+    <h3>⚡ ผลของการแสดงเจตนาที่บกพร่อง</h3>
+    <p>ถ้าเจตนาไม่สมบูรณ์ นิติกรรมจะ<strong>โมฆะ</strong> (เด็ดขาด — ใช้บังคับไม่ได้เลย) หรือ<strong>โมฆียะ</strong> (บอกล้างได้ — ถ้าไม่บอกล้างก็<strong>สมบูรณ์</strong>)</p>
+  </div>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" style="background:var(--gold);color:#000;border-color:var(--gold)" onclick="showSection('all')">🗺️ ภาพรวม</div>
+  <div class="tab" style="border-color:var(--yellow);color:var(--yellow)" onclick="showSection('hidden')">🟡 ซ่อน-ลวง-พราง</div>
+  <div class="tab" style="border-color:var(--orange);color:var(--orange)" onclick="showSection('mistake')">🟠 สำคัญผิด</div>
+  <div class="tab" style="border-color:var(--red);color:var(--red)" onclick="showSection('fraud')">🔴 ฉ้อฉล &amp; ข่มขู่</div>
+  <div class="tab" style="border-color:var(--blue);color:var(--blue)" onclick="showSection('effect')">🔵 ผลของการแสดงเจตนา</div>
+</div>
+
+<div class="main">
+
+<!-- OVERVIEW -->
+<div class="section-block show" id="sec-all">
+  <div class="click-hint">👆 คลิกการ์ดเพื่อดูรายละเอียด &nbsp;|&nbsp; คลิก <strong style="color:var(--gold)">ตัวเลขมาตรา</strong> เพื่อดูตัวบทกฎหมายเต็ม</div>
+  <div class="overview-grid">
+    <div class="ov-card" onclick="showSection('hidden')">
+      <div class="ov-top" style="border-color:rgba(251,191,36,.3)">
+        <div class="ov-icon">🟡</div>
+        <div><div class="ov-name" style="color:var(--yellow)">กลุ่มที่ 1 ซ่อน-ลวง-พราง</div><div class="ov-type" style="color:var(--text-dim)">รู้ตัวว่าแสดงไม่ตรงกับใจจริง</div></div>
+      </div>
+      <div class="ov-body">
+        <div class="ov-row"><span class="ov-label">เจตนาซ่อนเร้น</span><span class="mat-num c-yellow" onclick="event.stopPropagation();openModal('154')" style="font-size:.82rem">154 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">เจตนาลวง</span><span class="mat-num c-yellow" onclick="event.stopPropagation();openModal('155v1')" style="font-size:.82rem">155 ว.1 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">นิติกรรมอำพราง</span><span class="mat-num c-yellow" onclick="event.stopPropagation();openModal('155v2')" style="font-size:.82rem">155 ว.2 <span class="click-icon">👆</span></span></div>
+      </div>
+    </div>
+    <div class="ov-card" onclick="showSection('mistake')">
+      <div class="ov-top" style="border-color:rgba(251,146,60,.3)">
+        <div class="ov-icon">🟠</div>
+        <div><div class="ov-name" style="color:var(--orange)">กลุ่มที่ 2 สำคัญผิด</div><div class="ov-type" style="color:var(--text-dim)">ไม่รู้ตัวว่าเข้าใจคลาดเคลื่อน</div></div>
+      </div>
+      <div class="ov-body">
+        <div class="ov-row"><span class="ov-label">สำคัญผิดในสาระสำคัญ</span><span class="mat-num c-orange" onclick="event.stopPropagation();openModal('156')" style="font-size:.82rem">156 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">สำคัญผิดในคุณสมบัติ</span><span class="mat-num c-orange" onclick="event.stopPropagation();openModal('157')" style="font-size:.82rem">157 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">ประมาทเลินเล่ออย่างร้ายแรง</span><span class="mat-num c-orange" onclick="event.stopPropagation();openModal('158')" style="font-size:.82rem">158 <span class="click-icon">👆</span></span></div>
+      </div>
+    </div>
+    <div class="ov-card" onclick="showSection('fraud')">
+      <div class="ov-top" style="border-color:rgba(224,82,82,.3)">
+        <div class="ov-icon">🔴</div>
+        <div><div class="ov-name" style="color:var(--red)">กลุ่มที่ 3 ฉ้อฉล &amp; ข่มขู่</div><div class="ov-type" style="color:var(--text-dim)">ถูกปัจจัยภายนอกแทรกแซง</div></div>
+      </div>
+      <div class="ov-body">
+        <div class="ov-row"><span class="ov-label">กลฉ้อฉล (ถึงขนาด)</span><span class="mat-num c-red" onclick="event.stopPropagation();openModal('159')" style="font-size:.82rem">159 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">กลฉ้อฉลเพื่อเหตุ</span><span class="mat-num c-red" onclick="event.stopPropagation();openModal('161')" style="font-size:.82rem">161 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">การข่มขู่</span><span class="mat-num c-red" onclick="event.stopPropagation();openModal('164')" style="font-size:.82rem">164 <span class="click-icon">👆</span></span></div>
+      </div>
+    </div>
+    <div class="ov-card" onclick="showSection('effect')">
+      <div class="ov-top" style="border-color:rgba(74,158,255,.3)">
+        <div class="ov-icon">🔵</div>
+        <div><div class="ov-name" style="color:var(--blue)">กลุ่มที่ 4 ผลของการแสดงเจตนา</div><div class="ov-type" style="color:var(--text-dim)">ต่อหน้า vs ลับหลัง</div></div>
+      </div>
+      <div class="ov-body">
+        <div class="ov-row"><span class="ov-label">แสดงต่อหน้าบุคคล</span><span class="mat-num c-blue" onclick="event.stopPropagation();openModal('168')" style="font-size:.82rem">168 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">แสดงลับหลังบุคคล</span><span class="mat-num c-blue" onclick="event.stopPropagation();openModal('169')" style="font-size:.82rem">169 <span class="click-icon">👆</span></span></div>
+        <div class="ov-row"><span class="ov-label">ถอนการแสดงเจตนา</span><span class="mat-num c-blue" onclick="event.stopPropagation();openModal('169v2')" style="font-size:.82rem">169 ว.2 <span class="click-icon">👆</span></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="note" style="background:rgba(240,192,64,.07);border-color:rgba(240,192,64,.3);color:var(--gold);margin-top:16px">
+    <strong>💡 สูตรจำภาพรวม 4 กลุ่ม:</strong><br>
+    <strong>① ซ่อน-ลวง-พราง (ม.154-155) → ② ผิดสาระ-ผิดสเปก (ม.156-158) → ③ ฉ้อฉล-ข่มขู่ (ม.159-165) → ④ ต่อหน้า-ลับหลัง (ม.168-169)</strong><br>
+    <span style="font-size:.8rem;opacity:.85">💡 <strong>คลิกตัวเลขมาตรา</strong> เพื่อดูตัวบทกฎหมายเต็มได้ทุกที่</span>
+  </div>
+</div>
+
+<!-- กลุ่มที่ 1 -->
+<div class="section-block" id="sec-hidden">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(251,191,36,.15)">🟡</div>
+    <div class="sec-title">
+      <h2 style="color:var(--yellow)">กลุ่มที่ 1 · เจตนาไม่ตรงกับใจ "ซ่อน-ลวง-พราง"</h2>
+      <p>ผู้แสดงเจตนา <strong>รู้ตัว</strong> ว่าสิ่งที่แสดงออกไปไม่ตรงกับความตั้งใจจริง (มาตรา 154–155)</p>
+    </div>
+  </div>
+  <div class="matrix-wrap">
+    <table>
+      <thead><tr><th style="color:var(--yellow)">ประเภท</th><th>คำอธิบาย / สูตรจำ</th><th style="color:var(--gold)">มาตรา 👆</th><th>ผลทางกฎหมาย</th></tr></thead>
+      <tbody>
+        <tr class="row-valid">
+          <td><strong>เจตนาซ่อนเร้น</strong><br><span style="font-size:.75rem;color:var(--text-dim)">เก็บซ่อนในใจฝ่ายเดียว</span></td>
+          <td>คิดอย่าง ทำอย่าง ฝ่ายเดียวทำเนียน<br><span style="color:var(--text-dim);font-size:.78rem">สูตร: "เก็บไว้ในใจ = สมบูรณ์ (เว้นแต่เขารู้ = โมฆะ)"</span></td>
+          <td><span class="mat-num c-yellow" onclick="openModal('154')">154 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-green border-green">สมบูรณ์</span><br><span style="font-size:.75rem;color:var(--text-dim)">เว้นแต่คู่กรณีรู้ → <span class="effect-tag c-red border-red">โมฆะ</span></span></td>
+        </tr>
+        <tr class="row-void">
+          <td><strong>เจตนาลวง</strong><br><span style="font-size:.75rem;color:var(--text-dim)">ฮั้วกัน 2 ฝ่าย หลอกชาวบ้าน</span></td>
+          <td>สมรู้ร่วมคิดกันทั้งสองฝ่าย ทำนิติกรรมแต่ไม่ต้องการให้ผลนั้นเกิดจริง<br><span style="color:var(--text-dim);font-size:.78rem">สูตร: "ฮั้วกันหลอกชาวบ้าน = โมฆะ"</span></td>
+          <td><span class="mat-num c-yellow" onclick="openModal('155v1')">155 ว.1 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-red border-red">โมฆะ</span><br><span style="font-size:.75rem;color:var(--text-dim)">ยกสู้บุคคลภายนอกสุจริต+ค่าตอบแทนไม่ได้</span></td>
+        </tr>
+        <tr class="row-void">
+          <td><strong>นิติกรรมอำพราง</strong><br><span style="font-size:.75rem;color:var(--text-dim)">เปิดหน้า(ลวง) ซ่อนของจริงไว้</span></td>
+          <td>ทำนิติกรรมบังหน้าเพื่อซ่อนนิติกรรมจริงไว้ข้างหลัง<br><span style="color:var(--text-dim);font-size:.78rem">สูตร: "เปิดหน้า=โมฆะ / หลังไมค์=บังคับตามนั้น"</span></td>
+          <td><span class="mat-num c-yellow" onclick="openModal('155v2')">155 ว.2 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-red border-red">บังหน้า=โมฆะ</span><br><span class="effect-tag c-green border-green" style="margin-top:4px;display:inline-block">อำพราง=บังคับได้</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.3)">
+    <strong style="color:var(--yellow)">📌 จุดระวัง ม.155 ว.1</strong> — ถ้ามีบุคคลภายนอกที่<strong>สุจริต</strong>และ<strong>เสียค่าตอบแทน</strong>เข้ามาเกี่ยวข้อง คู่กรณีจะยกความเป็นโมฆะขึ้นมาสู้กับบุคคลภายนอกคนนั้น<strong>ไม่ได้</strong>
+  </div>
+  <div class="formula-card">
+    <h4>🔑 เทคนิคจำสำหรับข้อสอบ</h4>
+    <p>ถามว่า "สัญญาที่แท้จริงคืออะไร?" → ดู<strong>ม.155 ว.2</strong> โยนส่วนที่เปิดหน้าทิ้ง แล้วนำส่วนที่ซ่อนอยู่ข้างหลังมาบังคับตามหลักกฎหมายที่เกี่ยวข้อง</p>
+  </div>
+</div>
+
+<!-- กลุ่มที่ 2 -->
+<div class="section-block" id="sec-mistake">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(251,146,60,.15)">🟠</div>
+    <div class="sec-title">
+      <h2 style="color:var(--orange)">กลุ่มที่ 2 · ความสำคัญผิด "ผิดสาระ vs ผิดสเปก"</h2>
+      <p>แสดงเจตนาออกไปโดย<strong>ไม่รู้ตัว</strong>ว่าเข้าใจคลาดเคลื่อน (มาตรา 156–158)</p>
+    </div>
+  </div>
+  <div class="matrix-wrap">
+    <table>
+      <thead><tr><th style="color:var(--orange)">ประเภท</th><th>ลักษณะ / ตัวอย่าง</th><th style="color:var(--gold)">มาตรา 👆</th><th>ผลทางกฎหมาย</th></tr></thead>
+      <tbody>
+        <tr class="row-void">
+          <td><strong>สำคัญผิดในสาระสำคัญ</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"ผิดอย่างแรง = โมฆะ"</span></td>
+          <td>ผิดระดับรากฐาน 3 กรณี:<br><span style="font-size:.78rem">① ผิดตัวบุคคล ② ผิดตัวทรัพย์ ③ ผิดลักษณะนิติกรรม<br><span style="color:var(--text-dim)">เช่น คิดว่าเซ็นเช่า แต่ดันเซ็นซื้อขาย</span></span></td>
+          <td><span class="mat-num c-orange" onclick="openModal('156')">156 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-red border-red">โมฆะ</span><br><span style="font-size:.75rem;color:var(--text-dim)">เป็นโมฆะเด็ดขาด</span></td>
+        </tr>
+        <tr class="row-voidable">
+          <td><strong>สำคัญผิดในคุณสมบัติ</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"ผิดสเปก = โมฆียะ"</span></td>
+          <td>ตัวทรัพย์/คนถูก แต่คุณสมบัติไม่ตรงปก<br><span style="font-size:.78rem;color:var(--text-dim)">เช่น ซื้อพระเครื่องคิดว่าแท้ที่จริงเก๊<br>หรือ จ้างคนคิดว่ามีใบอนุญาต แต่ไม่มี</span></td>
+          <td><span class="mat-num c-orange" onclick="openModal('157')">157 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-orange border-orange">โมฆียะ</span><br><span style="font-size:.75rem;color:var(--text-dim)">บอกล้างได้</span></td>
+        </tr>
+        <tr class="row-special">
+          <td><strong>ประมาทเลินเล่ออย่างร้ายแรง</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"สะเพร่าสุดๆ อดใช้สิทธิ์"</span></td>
+          <td>มีสิทธิ์อ้างสำคัญผิด แต่<strong>ประมาทเลินเล่ออย่างร้ายแรง</strong>จนเกิดผิดนั้น<br><span style="font-size:.78rem;color:var(--text-dim)">เช่น ไม่ยอมอ่านสัญญาเลย เซ็นแบบไม่ดู</span></td>
+          <td><span class="mat-num c-orange" onclick="openModal('158')">158 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-red border-red">อ้างไม่ได้</span><br><span style="font-size:.75rem;color:var(--text-dim)">นิติกรรมสมบูรณ์</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="background:rgba(251,146,60,.07);border-color:rgba(251,146,60,.3)">
+    <strong style="color:var(--orange)">📌 จุดตัดสำคัญ ม.156 vs ม.157</strong><br>
+    <strong>ม.156 (โมฆะ)</strong> — ผิดใหญ่ ผิดตัวคน/ตัวทรัพย์/ชนิดนิติกรรม<br>
+    <strong>ม.157 (โมฆียะ)</strong> — ผิดเล็ก คุณสมบัติไม่ตรง แต่รู้ว่าจะทำกับใคร ทำอะไร<br>
+    💡 ผิดว่าพระแท้ที่จริงเก๊ = ม.157 โมฆียะ ไม่ใช่ ม.156
+  </div>
+</div>
+
+<!-- กลุ่มที่ 3 -->
+<div class="section-block" id="sec-fraud">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(224,82,82,.15)">🔴</div>
+    <div class="sec-title">
+      <h2 style="color:var(--red)">กลุ่มที่ 3 · ถูกแทรกแซง "กลฉ้อฉล &amp; การข่มขู่"</h2>
+      <p>แสดงเจตนาเพราะโดน<strong>ปัจจัยภายนอก</strong>มากระทบ (มาตรา 159–165)</p>
+    </div>
+  </div>
+  <div class="matrix-wrap">
+    <table>
+      <thead><tr><th style="color:var(--red)">ประเภท</th><th>องค์ประกอบ / สูตรจำ</th><th style="color:var(--gold)">มาตรา 👆</th><th>ผลทางกฎหมาย</th></tr></thead>
+      <tbody>
+        <tr class="row-voidable">
+          <td><strong>กลฉ้อฉล</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"ถูกหลอกจนเปื่อย = โมฆียะ"</span></td>
+          <td>ต้องเป็นกลฉ้อฉล<strong>ถึงขนาด</strong> — ถ้ารู้ความจริงจะ<strong>ไม่ทำ</strong>นิติกรรมนั้นเลย<br><span style="font-size:.78rem;color:var(--text-dim)">ถูกหลอกถึงขนาด → โมฆียะ</span></td>
+          <td><span class="mat-num c-red" onclick="openModal('159')">159 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-orange border-orange">โมฆียะ</span><br><span style="font-size:.75rem;color:var(--text-dim)">บอกล้างได้ + เรียกค่าสินไหมได้</span></td>
+        </tr>
+        <tr class="row-voidable">
+          <td><strong>กลฉ้อฉลโดยบุคคลภายนอก</strong><br><span style="font-size:.75rem;color:var(--text-dim)">คนนอกเป็นคนหลอก</span></td>
+          <td>บุคคลภายนอกหลอก → บอกล้างได้<strong>เฉพาะถ้าคู่กรณีรู้หรือควรรู้</strong><br><span style="font-size:.78rem;color:var(--text-dim)">คู่กรณีไม่รู้ → สมบูรณ์ แต่เรียกค่าสินไหมจากคนหลอกได้</span></td>
+          <td><span class="mat-num c-red" onclick="openModal('160')">160 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-orange border-orange">โมฆียะ (เงื่อนไข)</span></td>
+        </tr>
+        <tr class="row-valid">
+          <td><strong>กลฉ้อฉลเพื่อเหตุ</strong><br><span style="font-size:.75rem;color:var(--text-dim)">หลอกแค่บางส่วน ไม่ถึงขนาด</span></td>
+          <td>ถูกหลอกแต่<strong>ถ้ารู้ความจริงก็ยังทำอยู่ดี</strong> เพียงแต่เงื่อนไขต่างออกไป<br><span style="font-size:.78rem;color:var(--text-dim)">หลอกไม่ถึงขนาด → สมบูรณ์ แต่เรียกค่าสินไหมได้</span></td>
+          <td><span class="mat-num c-red" onclick="openModal('161')">161 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-green border-green">สมบูรณ์</span><br><span style="font-size:.75rem;color:var(--text-dim)">แต่เรียกค่าสินไหมได้</span></td>
+        </tr>
+        <tr class="row-voidable">
+          <td><strong>การข่มขู่</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"กลัวภัยใกล้จะถึง = โมฆียะ"</span></td>
+          <td>ภัยต้อง<strong>ใกล้จะถึง</strong>และ<strong>ร้ายแรง</strong>พอที่คนทั่วไปในสถานการณ์นั้นจะต้องกลัว<br><span style="font-size:.78rem;color:var(--text-dim)">ขู่ภัยใกล้-ร้ายแรง → โมฆียะ</span></td>
+          <td><span class="mat-num c-red" onclick="openModal('164')">164 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-orange border-orange">โมฆียะ</span><br><span style="font-size:.75rem;color:var(--text-dim)">บอกล้างได้ภายใน 1 ปีนับแต่พ้นภัย</span></td>
+        </tr>
+        <tr class="row-valid">
+          <td><strong>ข้อยกเว้น: ขู่ว่าจะใช้สิทธิ์ / เคารพยำเกรง</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"ขู่แบบมีสิทธิ์ = ไม่ผิด"</span></td>
+          <td>① ขู่ว่าจะ<strong>ใช้สิทธิ์ตามกฎหมาย</strong> (เช่น ขู่จะฟ้องถ้าไม่ชำระหนี้)<br>② <strong>เคารพยำเกรง</strong>โดยธรรมชาติ (เช่น ยำเกรงบิดา)</td>
+          <td><span class="mat-num c-red" onclick="openModal('165')">165 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-green border-green">สมบูรณ์</span><br><span style="font-size:.75rem;color:var(--text-dim)">ไม่เป็นโมฆียะ</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="background:rgba(224,82,82,.07);border-color:rgba(224,82,82,.3)">
+    <strong style="color:var(--red)">📌 จุดตัด กลฉ้อฉล vs ข่มขู่</strong><br>
+    <strong>กลฉ้อฉล (ม.159)</strong> = หลอกให้เชื่อสิ่งที่ไม่จริง → เหยื่อยินยอมแต่ถูกหลอก<br>
+    <strong>ข่มขู่ (ม.164)</strong> = บังคับให้กลัวด้วยภัยร้ายแรง → เหยื่อยินยอมเพราะกลัว<br>
+    💡 ทั้งคู่ผลเป็น<strong>โมฆียะ</strong>เหมือนกัน แต่ที่มาและเงื่อนไขต่างกัน
+  </div>
+</div>
+
+<!-- กลุ่มที่ 4 -->
+<div class="section-block" id="sec-effect">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(74,158,255,.15)">🔵</div>
+    <div class="sec-title">
+      <h2 style="color:var(--blue)">กลุ่มที่ 4 · ผลของการแสดงเจตนา "ต่อหน้า vs ลับหลัง"</h2>
+      <p>จังหวะเวลาที่กฎหมายถือว่าการแสดงเจตนา "เกิดผล" ผูกพันแล้ว (มาตรา 168–169)</p>
+    </div>
+  </div>
+  <div class="matrix-wrap">
+    <table>
+      <thead><tr><th style="color:var(--blue)">ประเภท</th><th>ช่องทาง</th><th style="color:var(--gold)">มาตรา 👆</th><th>จุดที่เกิดผล</th></tr></thead>
+      <tbody>
+        <tr class="row-valid">
+          <td><strong>แสดงเจตนาต่อหน้าบุคคล</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"มีผลทันทีที่รับรู้"</span></td>
+          <td>พูดโดยตรง, โทรศัพท์, วิดีโอคอล<br><span style="font-size:.78rem;color:var(--text-dim)">ทุกช่องทางที่โต้ตอบกันได้<strong>ทันที</strong></span></td>
+          <td><span class="mat-num c-blue" onclick="openModal('168')">168 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag" style="color:var(--blue);border-color:var(--blue)">มีผลเมื่อรับรู้</span><br><span style="font-size:.75rem;color:var(--text-dim)">เขาได้ยินและเข้าใจตอนไหน มีผลตอนนั้น</span></td>
+        </tr>
+        <tr class="row-special">
+          <td><strong>แสดงเจตนาลับหลังบุคคล</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"มีผลเมื่อไปถึง"</span></td>
+          <td>จดหมาย, อีเมล, SMS, เอกสาร<br><span style="font-size:.78rem;color:var(--text-dim)">ทุกช่องทางที่<strong>ไม่โต้ตอบได้ทันที</strong></span></td>
+          <td><span class="mat-num c-blue" onclick="openModal('169')">169 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag" style="color:var(--blue);border-color:var(--blue)">มีผลเมื่อถึง</span><br><span style="font-size:.75rem;color:var(--text-dim)">ถึงปุ๊บ มีผลปั๊บ ไม่ต้องรอให้เปิดอ่าน</span></td>
+        </tr>
+        <tr class="row-valid">
+          <td><strong>การถอนการแสดงเจตนา</strong><br><span style="font-size:.75rem;color:var(--text-dim)">"ถอนก่อนถึง = ยังไม่มีผล"</span></td>
+          <td>ส่งหนังสือถอน<strong>ก่อน</strong>หรือ<strong>พร้อมกัน</strong>กับหนังสือแสดงเจตนา<br><span style="font-size:.78rem;color:var(--text-dim)">เช่น ส่งอีเมลเสนอขาย แล้วโทรถอนก่อนอีกฝ่ายเปิดอ่าน → ถอนได้</span></td>
+          <td><span class="mat-num c-blue" onclick="openModal('169v2')">169 ว.2 <span class="click-icon">👆</span></span></td>
+          <td><span class="effect-tag c-green border-green">ถอนสำเร็จ=ไร้ผล</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note" style="background:rgba(74,158,255,.07);border-color:rgba(74,158,255,.3)">
+    <strong style="color:var(--blue)">📌 ม.169 (ลับหลัง)</strong> — มีผล<strong>เมื่อไปถึง</strong> ไม่ใช่เมื่ออ่าน<br>
+    ตัวอย่าง: ส่งจดหมายบอกเลิกสัญญา → จดหมายถึงบ้านปุ๊บ สัญญาเลิกปั๊บ แม้ยังไม่ได้เปิดอ่าน<br>
+    <strong style="color:var(--blue)">⚠️ ถ้าผู้แสดงเจตนาตายก่อนจดหมายถึง</strong> — การแสดงเจตนายังคงมีผลตาม ม.169 วรรคท้าย
+  </div>
+  <div class="formula-card">
+    <h4>🔑 สูตรจำ ม.168 vs ม.169</h4>
+    <p><strong>ต่อหน้า (ม.168)</strong> = โต้ตอบได้ทันที → มีผล<strong>เมื่อรับรู้</strong> (Hearing Rule)<br>
+    <strong>ลับหลัง (ม.169)</strong> = ไม่โต้ตอบทันที → มีผล<strong>เมื่อถึง</strong> (Arrival Rule)<br>
+    💡 ถามตัวเอง: "โต้ตอบกันได้ทันทีไหม?" ถ้าใช่ = ม.168 / ถ้าไม่ใช่ = ม.169</p>
+  </div>
+</div>
+
+</div><!-- /main -->
+<footer>จัดทำโดย จิราเมธ โปติ๊บ 6840030651 มหาวิทยาลัยสุโขทัยธรรมาธิราช <br>Mind Map สรุป ชุดวิชา 41214 กฎหมายแพ่ง เรื่องการแสดงเจตนา</footer>
+
+<script>
+/* ===== TABS ===== */
+const AC={all:'var(--gold)',hidden:'var(--yellow)',mistake:'var(--orange)',fraud:'var(--red)',effect:'var(--blue)'};
+function showSection(id){
+  document.querySelectorAll('.section-block').forEach(b=>b.classList.remove('show'));
+  document.getElementById('sec-'+id).classList.add('show');
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const k=['all','hidden','mistake','fraud','effect'][i];
+    if(k===id){t.style.background=AC[k];t.style.color='#000';t.style.borderColor=AC[k]}
+    else{t.style.background='var(--card)';t.style.color=AC[k];t.style.borderColor=AC[k]}
+  });
+}
+
+/* ===== LAW DATA ===== */
+const D={
+  '154':{
+    bc:'#fbbf24',bb:'rgba(251,191,36,.15)',
+    badge:'ม.154 · เจตนาซ่อนเร้น',
+    title:'มาตรา ๑๕๔ — เจตนาซ่อนเร้น (Mental Reservation)',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๕๔
+
+การแสดงเจตนาใดแม้ในใจผู้แสดงจะมิได้ตั้งใจให้ผูกพันตนก็ตาม
+หาเป็นโมฆะไม่
+
+เว้นแต่คู่กรณีอีกฝ่ายหนึ่งจะได้รู้ถึงเจตนาอันซ่อนอยู่ในใจนั้น`,
+    elems:[
+      {t:'ผู้แสดงเจตนา<strong>รู้ตัว</strong>ว่าแสดงสิ่งที่ไม่ตรงกับใจจริง',s:[]},
+      {t:'เป็นการกระทำ<strong>ฝ่ายเดียว</strong> ไม่ได้สมรู้กับอีกฝ่าย',s:[]},
+      {t:'<strong>ผลปกติ</strong>: นิติกรรม<strong>สมบูรณ์</strong> ใช้บังคับได้',s:[]},
+      {t:'<strong>ข้อยกเว้น</strong>: เป็นโมฆะ ถ้าคู่กรณีอีกฝ่าย<strong>รู้ถึงเจตนา</strong>ที่ซ่อนอยู่',s:[]},
+    ],
+    note:'สูตรจำ: "เก็บไว้ในใจ = สมบูรณ์ | เว้นแต่เขารู้ = โมฆะ"',
+    pills:[{c:'r-valid',l:'สมบูรณ์ (หลักทั่วไป)'}],
+    rn:'<strong>ข้อยกเว้น</strong>: ถ้าคู่กรณีรู้ถึงเจตนาที่ซ่อน → นิติกรรมเป็น<strong>โมฆะ</strong>'
+  },
+  '155v1':{
+    bc:'#fbbf24',bb:'rgba(251,191,36,.15)',
+    badge:'ม.155 ว.1 · เจตนาลวง',
+    title:'มาตรา ๑๕๕ วรรคหนึ่ง — เจตนาลวง (Simulation)',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๕๕ วรรคหนึ่ง
+
+การแสดงเจตนาลวงโดยสมรู้กับคู่กรณีอีกฝ่ายหนึ่งนั้น เป็นโมฆะ
+
+แต่จะยกขึ้นเป็นข้อต่อสู้บุคคลภายนอกผู้กระทำการโดยสุจริต
+และมิได้เสียเปรียบจากการแสดงเจตนาลวงนั้นไม่ได้`,
+    elems:[
+      {t:'มีการแสดงเจตนา<strong>ลวง</strong> — ทำนิติกรรมโดยไม่ต้องการให้เกิดผลจริง',s:[]},
+      {t:'<strong>สมรู้ร่วมคิดกัน</strong>ทั้งสองฝ่าย (ต่างจากเจตนาซ่อนเร้นที่ฝ่ายเดียวรู้)',s:[]},
+      {t:'<strong>ผล</strong>: นิติกรรมที่แสดงออกนั้น<strong>เป็นโมฆะ</strong>',s:[]},
+      {t:'<strong>ข้อยกเว้น</strong>: ยกขึ้นสู้บุคคลภายนอกที่<strong>สุจริต + ไม่เสียเปรียบ</strong>ไม่ได้',s:[]},
+    ],
+    note:'สูตรจำ: "ฮั้วกันหลอกชาวบ้าน = โมฆะ | แต่ห้ามยกสู้บุคคลภายนอกสุจริต"',
+    pills:[{c:'r-void',l:'โมฆะ'}],
+    rn:'ยกเป็นข้อต่อสู้ <strong>บุคคลภายนอกสุจริต + ไม่เสียเปรียบ</strong> ไม่ได้ — กฎหมายคุ้มครองบุคคลภายนอกสุจริต'
+  },
+  '155v2':{
+    bc:'#fbbf24',bb:'rgba(251,191,36,.15)',
+    badge:'ม.155 ว.2 · นิติกรรมอำพราง',
+    title:'มาตรา ๑๕๕ วรรคสอง — นิติกรรมอำพราง (Dissimulation)',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๕๕ วรรคสอง
+
+ถ้าการแสดงเจตนาลวงตามวรรคหนึ่งทำขึ้นเพื่ออำพรางนิติกรรมอื่น
+ให้นำบทบัญญัติของกฎหมายอันเกี่ยวกับนิติกรรมที่ถูกอำพรางนั้น
+มาใช้บังคับ`,
+    elems:[
+      {t:'ทำ<strong>นิติกรรมบังหน้า</strong> (ลวง) เพื่อปกปิด<strong>นิติกรรมจริง</strong> (อำพราง)',s:[]},
+      {t:'ต้องสมรู้กันทั้งสองฝ่ายเช่นเดียวกับ ม.155 ว.1',s:[]},
+      {t:'<strong>นิติกรรมที่เปิดหน้า (บังหน้า)</strong> → เป็น<strong>โมฆะ</strong>',s:[]},
+      {t:'<strong>นิติกรรมที่ซ่อนอยู่ (อำพราง)</strong> → นำกฎหมายที่เกี่ยวข้อง<strong>มาบังคับใช้</strong>',s:['ตัวอย่าง: ทำสัญญาให้โดยเสน่หาบังหน้า (โมฆะ) ข้างหลังเป็นสัญญาซื้อขาย → บังคับตามหลักสัญญาซื้อขาย']},
+    ],
+    note:'สูตรจำ: "เปิดหน้า (ลวง) = โมฆะ | หลังไมค์ (อำพราง) = บังคับตามนั้น"',
+    pills:[{c:'r-void',l:'นิติกรรมบังหน้า = โมฆะ'},{c:'r-valid',l:'นิติกรรมอำพราง = บังคับใช้ได้'}],
+    rn:'หลักการ: โยนนิติกรรมที่เปิดหน้าทิ้ง แล้วนำนิติกรรมจริงที่ซ่อนอยู่ข้างหลังมา<strong>บังคับตามกฎหมายที่เกี่ยวข้อง</strong>'
+  },
+  '156':{
+    bc:'#fb923c',bb:'rgba(251,146,60,.15)',
+    badge:'ม.156 · สำคัญผิดในสาระสำคัญ',
+    title:'มาตรา ๑๕๖ — สำคัญผิดในสาระสำคัญแห่งนิติกรรม',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๕๖
+
+การแสดงเจตนาโดยสำคัญผิดในสาระสำคัญแห่งนิติกรรมนั้น เป็นโมฆะ
+
+ความสำคัญผิดในสาระสำคัญแห่งนิติกรรม ได้แก่
+ความสำคัญผิดในลักษณะของนิติกรรม
+ความสำคัญผิดในตัวบุคคลซึ่งเป็นคู่กรณีแห่งนิติกรรม
+และความสำคัญผิดในทรัพย์สินซึ่งเป็นวัตถุแห่งนิติกรรม`,
+    elems:[
+      {t:'<strong>ประเภทที่ 1 สำคัญผิดในลักษณะนิติกรรม</strong>',s:['เช่น คิดว่าเป็นสัญญาเช่า แต่ที่จริงเป็นสัญญาซื้อขาย']},
+      {t:'<strong>ประเภทที่ 2 สำคัญผิดในตัวบุคคลคู่กรณี</strong>',s:['เช่น คิดว่าทำสัญญากับ นายก. แต่ที่จริงทำกับ นายข.']},
+      {t:'<strong>ประเภทที่ 3 สำคัญผิดในทรัพย์สินวัตถุแห่งนิติกรรม</strong>',s:['เช่น คิดว่าซื้อที่ดินแปลง ก แต่ที่จริงซื้อแปลง ข']},
+    ],
+    note:'สูตรจำ: "ผิดอย่างแรง = โมฆะ" — ผิดพลาดในระดับรากฐานของนิติกรรม',
+    pills:[{c:'r-void',l:'โมฆะ (เด็ดขาด)'}],
+    rn:'นิติกรรมเป็น<strong>โมฆะเด็ดขาด</strong> ใช้บังคับไม่ได้เลย ผู้ใดจะยกขึ้นอ้างก็ได้ ไม่จำกัดเวลา'
+  },
+  '157':{
+    bc:'#fb923c',bb:'rgba(251,146,60,.15)',
+    badge:'ม.157 · สำคัญผิดในคุณสมบัติ',
+    title:'มาตรา ๑๕๗ — สำคัญผิดในคุณสมบัติของบุคคลหรือทรัพย์',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๕๗
+
+การแสดงเจตนาโดยสำคัญผิดในคุณสมบัติของบุคคลหรือทรัพย์สินนั้น
+เป็นโมฆียะ
+
+ความสำคัญผิดตามวรรคหนึ่ง ต้องเป็นความสำคัญผิดในคุณสมบัติ
+ซึ่งตามปกติถือว่าเป็นสาระสำคัญ ซึ่งหากมิได้มีความสำคัญผิดนั้น
+การอันเป็นโมฆียะนั้นคงจะมิได้กระทำขึ้น`,
+    elems:[
+      {t:'รู้ว่าจะทำกับ<strong>ใคร/อะไร</strong> แต่เข้าใจ<strong>คุณสมบัติ</strong>ผิด',s:['เช่น ซื้อพระเครื่อง รู้ว่าองค์นี้ แต่คิดว่าเป็นของแท้ ที่จริงเก๊','เช่น จ้างช่าง คิดว่ามีใบอนุญาต แต่จริงๆ ไม่มี']},
+      {t:'คุณสมบัตินั้นต้อง<strong>ตามปกติถือว่าเป็นสาระสำคัญ</strong>',s:[]},
+      {t:'ถ้าไม่มีความสำคัญผิดนั้น จะ<strong>ไม่ทำนิติกรรม</strong>นั้น',s:[]},
+    ],
+    note:'สูตรจำ: "ผิดสเปก = โมฆียะ" — ตัวตรงแต่ spec ไม่ตรงปก ต่างจาก ม.156 ที่ผิดตัวทรัพย์/คน/ประเภทเลย',
+    pills:[{c:'r-voidable',l:'โมฆียะ'}],
+    rn:'บอกล้างได้ภายใน <strong>1 ปี</strong> นับแต่รู้เหตุ หรืออย่างช้า <strong>10 ปี</strong> นับแต่ทำนิติกรรม (ม.181)'
+  },
+  '158':{
+    bc:'#fb923c',bb:'rgba(251,146,60,.15)',
+    badge:'ม.158 · ประมาทเลินเล่ออย่างร้ายแรง',
+    title:'มาตรา ๑๕๘ — ข้อยกเว้น: ประมาทเลินเล่ออย่างร้ายแรง',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๕๘
+
+ความสำคัญผิดตามมาตรา ๑๕๖ หรือมาตรา ๑๕๗
+ซึ่งเกิดขึ้นโดยความประมาทเลินเล่ออย่างร้ายแรง
+ของบุคคลผู้แสดงเจตนา
+
+บุคคลนั้นจะยกความสำคัญผิดนั้นขึ้นเป็นข้อต่อสู้
+คู่กรณีอีกฝ่ายหนึ่งซึ่งมิได้รู้ถึงความสำคัญผิดนั้นไม่ได้`,
+    elems:[
+      {t:'ต้องมีความสำคัญผิดตาม<strong>ม.156 หรือ ม.157</strong> ก่อน',s:[]},
+      {t:'ความสำคัญผิดนั้นเกิดจาก<strong>ประมาทเลินเล่ออย่างร้ายแรง</strong>ของผู้แสดงเจตนา',s:['เช่น ไม่ยอมอ่านสัญญาเลยก่อนเซ็น','เช่น ไม่ตรวจสอบคุณสมบัติแม้มีโอกาสชัดเจน']},
+      {t:'คู่กรณีอีกฝ่าย<strong>ไม่ทราบ</strong>ถึงความสำคัญผิดนั้น',s:[]},
+    ],
+    note:'สูตรจำ: "สะเพร่าสุดๆ อดใช้สิทธิ์" — ม.158 คือบทลงโทษผู้ที่ไม่ใช้ความระมัดระวังแม้แต่น้อย',
+    pills:[{c:'r-special',l:'อ้างสำคัญผิดไม่ได้'}],
+    rn:'ผลคือนิติกรรม<strong>สมบูรณ์</strong> ไม่อาจยกความสำคัญผิดขึ้นต่อสู้คู่กรณีที่<strong>ไม่รู้</strong>ถึงความสำคัญผิดได้'
+  },
+  '159':{
+    bc:'#e05252',bb:'rgba(224,82,82,.15)',
+    badge:'ม.159 · กลฉ้อฉล',
+    title:'มาตรา ๑๕๙ — กลฉ้อฉล (Fraud / Deceit)',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๕๙
+
+การแสดงเจตนาเพราะถูกกลฉ้อฉลนั้น เป็นโมฆียะ
+
+การถูกกลฉ้อฉลที่จะเป็นโมฆียะตามวรรคหนึ่ง
+จะต้องถึงขนาดซึ่งถ้ามิได้มีกลฉ้อฉลนั้น
+การอันเป็นโมฆียะนั้นคงจะมิได้กระทำขึ้น`,
+    elems:[
+      {t:'มี<strong>กลฉ้อฉล</strong> — ต้องเป็นการหลอกลวงอย่างแอบแฝงหรือฉ้อโกง',s:[]},
+      {t:'ต้องถึง<strong>ขนาด</strong> — ถ้ารู้ความจริงแล้วจะ<strong>ไม่ทำนิติกรรม</strong>นั้นเลย',s:[]},
+      {t:'ต้องมี<strong>ความสัมพันธ์</strong>ระหว่างกลฉ้อฉลกับการแสดงเจตนา',s:[]},
+    ],
+    note:'สูตรจำ: "ถูกหลอกจนเปื่อย = โมฆียะ" | ถ้าหลอกแค่บางส่วนแต่ยังทำอยู่ = ม.161 (เพื่อเหตุ)',
+    pills:[{c:'r-voidable',l:'โมฆียะ'}],
+    rn:'บอกล้างได้ภายใน <strong>1 ปี</strong> นับแต่รู้เหตุ + เรียก<strong>ค่าสินไหมทดแทน</strong>จากผู้ฉ้อฉลได้ตาม ม.163'
+  },
+  '160':{
+    bc:'#e05252',bb:'rgba(224,82,82,.15)',
+    badge:'ม.160 · กลฉ้อฉลโดยบุคคลภายนอก',
+    title:'มาตรา ๑๖๐ — กลฉ้อฉลโดยบุคคลภายนอก',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๖๐
+
+การแสดงเจตนาเพราะถูกกลฉ้อฉลโดยบุคคลภายนอกนั้น
+เป็นโมฆียะต่อเมื่อคู่กรณีอีกฝ่ายหนึ่ง
+ได้รู้หรือควรจะได้รู้ถึงกลฉ้อฉลนั้น`,
+    elems:[
+      {t:'<strong>บุคคลภายนอก</strong> (ไม่ใช่คู่กรณี) เป็นผู้ใช้กลฉ้อฉล',s:[]},
+      {t:'คู่กรณีอีกฝ่าย<strong>รู้หรือควรรู้</strong>ถึงกลฉ้อฉลนั้น → <strong>โมฆียะ</strong>',s:[]},
+      {t:'คู่กรณีอีกฝ่าย<strong>ไม่รู้</strong>ถึงกลฉ้อฉลนั้น → นิติกรรม<strong>สมบูรณ์</strong>',s:[]},
+    ],
+    note:'สูตร: "คนนอกหลอก คู่กรณีรู้ = โมฆียะ | คู่กรณีไม่รู้ = สมบูรณ์ (ฟ้องคนหลอกได้)"',
+    pills:[{c:'r-voidable',l:'โมฆียะ (ถ้าคู่กรณีรู้)'},{c:'r-valid',l:'สมบูรณ์ (ถ้าคู่กรณีไม่รู้)'}],
+    rn:'แม้นิติกรรมสมบูรณ์ ผู้ถูกหลอกยังสามารถ<strong>เรียกค่าสินไหมทดแทน</strong>จากบุคคลภายนอกผู้ใช้กลฉ้อฉลได้'
+  },
+  '161':{
+    bc:'#e05252',bb:'rgba(224,82,82,.15)',
+    badge:'ม.161 · กลฉ้อฉลเพื่อเหตุ',
+    title:'มาตรา ๑๖๑ — กลฉ้อฉลเพื่อเหตุ (Dolus Incidens)',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๖๑
+
+ถ้ากลฉ้อฉลเป็นแต่เหตุจูงใจให้อีกฝ่ายหนึ่งยอมรับ
+ข้อกำหนดอันหนักยิ่งกว่าที่อีกฝ่ายนั้นจะยอมรับโดยปกติ
+
+อีกฝ่ายนั้นชอบที่จะเรียกเอาค่าสินไหมทดแทน
+เพื่อความเสียหายอันเกิดแต่กลฉ้อฉลนั้นได้
+แต่จะบอกล้างโมฆียะกรรมนั้นไม่ได้`,
+    elems:[
+      {t:'มีกลฉ้อฉล แต่<strong>ไม่ถึงขนาด</strong> — ถ้ารู้ความจริงก็<strong>ยังทำอยู่ดี</strong>',s:['เพียงแต่ยอมรับเงื่อนไขที่หนักกว่าที่ควรเป็น']},
+      {t:'ต่างจาก ม.159 ที่ถ้ารู้ความจริงจะ<strong>ไม่ทำ</strong>เลย',s:[]},
+    ],
+    note:'สูตรจำ: "หลอกไม่ถึงขนาด = สมบูรณ์ แต่เรียกค่าสินไหมได้"',
+    pills:[{c:'r-valid',l:'สมบูรณ์'}],
+    rn:'นิติกรรมใช้บังคับได้ปกติ แต่ผู้ถูกหลอกมีสิทธิเรียก<strong>ค่าสินไหมทดแทน</strong>สำหรับความเสียหายที่เกิดจากกลฉ้อฉลนั้น'
+  },
+  '164':{
+    bc:'#e05252',bb:'rgba(224,82,82,.15)',
+    badge:'ม.164 · การข่มขู่',
+    title:'มาตรา ๑๖๔ — การข่มขู่ (Duress / Intimidation)',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๖๔
+
+การแสดงเจตนาเพราะถูกข่มขู่นั้น เป็นโมฆียะ
+
+การข่มขู่ที่จะทำให้การแสดงเจตนาเป็นโมฆียะนั้น
+จะต้องเป็นการข่มขู่ที่จะให้เกิดภัยอันใกล้จะถึง
+และร้ายแรงถึงขนาดที่จะจูงใจให้บุคคลทั่วไป
+ในสถานการณ์เช่นนั้นต้องยอมทำการอันมีผลเป็นโมฆียะนั้น`,
+    elems:[
+      {t:'มีการ<strong>ข่มขู่</strong> — การขู่ว่าจะเกิดภัยร้ายแก่ผู้ถูกข่มขู่หรือบุคคลอื่น',s:[]},
+      {t:'ภัยนั้นต้อง<strong>ใกล้จะถึง</strong> — ไม่ใช่ภัยในอนาคตอันไกล',s:[]},
+      {t:'ภัยนั้นต้อง<strong>ร้ายแรงถึงขนาด</strong>ที่คนทั่วไปในสถานการณ์นั้นจะต้องกลัว',s:[]},
+    ],
+    note:'สูตรจำ: "กลัวภัยใกล้จะถึง = โมฆียะ" | ข้อยกเว้น: ขู่ว่าจะใช้สิทธิ์ตามกม. หรือเคารพยำเกรง = ม.165 ไม่ถือเป็นข่มขู่',
+    pills:[{c:'r-voidable',l:'โมฆียะ'}],
+    rn:'บอกล้างได้ภายใน <strong>1 ปี</strong> นับแต่พ้นจากการถูกข่มขู่ หรืออย่างช้า <strong>10 ปี</strong> นับแต่ทำนิติกรรม (ม.181)'
+  },
+  '165':{
+    bc:'#e05252',bb:'rgba(224,82,82,.15)',
+    badge:'ม.165 · ข้อยกเว้นการข่มขู่',
+    title:'มาตรา ๑๖๕ — สิ่งที่ไม่ถือเป็นการข่มขู่',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๖๕
+
+การขู่ว่าจะใช้สิทธิตามปกตินิยม
+ไม่ถือว่าเป็นการข่มขู่
+
+การแสดงเจตนาเพราะนับถือยำเกรง
+ไม่ถือว่าเป็นการแสดงเจตนาเพราะถูกข่มขู่`,
+    elems:[
+      {t:'<strong>กรณีที่ 1 ขู่ว่าจะใช้สิทธิตามปกตินิยม</strong>',s:['เช่น ขู่ว่าจะฟ้องศาลถ้าไม่ชำระหนี้','เช่น ขู่ว่าจะแจ้งตำรวจถ้าไม่คืนของ','→ เป็นการใช้สิทธิ์โดยชอบ ไม่ถือเป็นข่มขู่']},
+      {t:'<strong>กรณีที่ 2 แสดงเจตนาเพราะนับถือยำเกรง</strong>',s:['เช่น ยำเกรงบิดาจึงทำนิติกรรมตามใจบิดา','เช่น ยำเกรงครูอาจารย์หรือผู้บังคับบัญชา','→ เป็นความสัมพันธ์ตามธรรมชาติ ไม่ถือเป็นข่มขู่']},
+    ],
+    note:'สูตรจำ: "ขู่แบบมีสิทธิ์ = ไม่ผิด | ยำเกรงตามธรรมชาติ = ไม่ใช่ข่มขู่"',
+    pills:[{c:'r-valid',l:'นิติกรรมสมบูรณ์'}],
+    rn:'ทั้งสองกรณีตาม ม.165 <strong>ไม่ถือเป็นการข่มขู่</strong> ตาม ม.164 ดังนั้นนิติกรรมที่ทำขึ้น<strong>สมบูรณ์ ใช้บังคับได้ตามปกติ</strong>'
+  },
+  '168':{
+    bc:'#4a9eff',bb:'rgba(74,158,255,.15)',
+    badge:'ม.168 · แสดงเจตนาต่อหน้าบุคคล',
+    title:'มาตรา ๑๖๘ — ผลของการแสดงเจตนาต่อหน้าบุคคล',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๖๘
+
+การแสดงเจตนาที่กระทำต่อบุคคลซึ่งอยู่เฉพาะหน้านั้น
+การแสดงเจตนานั้นย่อมมีผลนับแต่ขณะที่บุคคลนั้นได้ทราบ
+การแสดงเจตนา
+
+ความในวรรคหนึ่งให้ใช้บังคับแก่การแสดงเจตนาทางโทรศัพท์
+หรือโดยเครื่องมือสื่อสารอย่างอื่น
+ซึ่งคู่กรณีสามารถสื่อสารถึงกันได้โดยตรงด้วย`,
+    elems:[
+      {t:'"<strong>อยู่เฉพาะหน้า</strong>" หมายถึงสามารถสื่อสารโต้ตอบกันได้<strong>ทันที</strong>',s:['พูดคุยโดยตรง ต่อหน้า','คุยโทรศัพท์ ทั้งแบบเสียงและวิดีโอ','สื่อสารผ่าน Line Call, Zoom, Teams ที่โต้ตอบทันที']},
+      {t:'<strong>จุดที่มีผล</strong>: นับแต่ขณะที่บุคคลนั้น<strong>ทราบ</strong>การแสดงเจตนา',s:[]},
+    ],
+    note:'สูตรจำ: "มีผลเมื่อรับรู้" (Hearing Rule) | Keyword: โต้ตอบกันได้ทันที = อยู่เฉพาะหน้า',
+    pills:[{c:'r-valid',l:'มีผลเมื่อรับรู้'}],
+    rn:'เขา<strong>ได้ยินและเข้าใจ</strong>ตอนไหน → นิติกรรมมีผลตอนนั้น | ต่างจาก ม.169 (ลับหลัง) ที่มีผลเมื่อถึง โดยไม่ต้องรออ่าน'
+  },
+  '169':{
+    bc:'#4a9eff',bb:'rgba(74,158,255,.15)',
+    badge:'ม.169 ว.1 · แสดงเจตนาลับหลัง',
+    title:'มาตรา ๑๖๙ วรรคหนึ่ง — ผลของการแสดงเจตนาลับหลัง',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๖๙ วรรคหนึ่ง
+
+การแสดงเจตนาที่กระทำต่อบุคคลซึ่งมิได้อยู่เฉพาะหน้านั้น
+ย่อมมีผลนับแต่เวลาที่การแสดงเจตนานั้นไปถึงผู้รับการแสดงเจตนา
+
+ถ้าผู้แสดงเจตนาได้ถอนการแสดงเจตนานั้น
+ก่อน หรือพร้อมกันกับที่การแสดงเจตนานั้นไปถึงผู้รับ
+การแสดงเจตนานั้นตกเป็นอันไร้ผล`,
+    elems:[
+      {t:'"<strong>มิได้อยู่เฉพาะหน้า</strong>" หมายถึงไม่สามารถโต้ตอบกันได้ทันที',s:['ส่งจดหมาย','ส่งอีเมล (ที่ไม่ได้แชทโต้ตอบทันที)','ส่ง SMS, โทรเลข, โทรสาร']},
+      {t:'<strong>จุดที่มีผล</strong>: นับแต่เวลาที่การแสดงเจตนา<strong>ไปถึง</strong>ผู้รับ',s:['ไม่ต้องรอให้ผู้รับเปิดอ่าน','ขอแค่อยู่ในวิสัยที่ผู้รับ<strong>จะรับรู้ได้</strong>']},
+    ],
+    note:'สูตรจำ: "มีผลเมื่อถึง" (Arrival Rule) | ถึงปุ๊บ มีผลปั๊บ ไม่ต้องรอเปิดอ่าน',
+    pills:[{c:'r-valid',l:'มีผลเมื่อไปถึง'}],
+    rn:'ตัวอย่าง: ส่งจดหมายบอกเลิกสัญญา → จดหมายถึงบ้านผู้รับปุ๊บ สัญญาเลิกทันที แม้ยังไม่ได้เปิดอ่าน<br>⚠️ ถ้าผู้แสดงเจตนา<strong>ตายหรือถูกจำกัดความสามารถ</strong>ก่อนจดหมายถึง → การแสดงเจตนายังคงมีผลอยู่'
+  },
+  '169v2':{
+    bc:'#4a9eff',bb:'rgba(74,158,255,.15)',
+    badge:'ม.169 · การถอนการแสดงเจตนา',
+    title:'มาตรา ๑๖๙ — การถอนการแสดงเจตนา (Withdrawal)',
+    sub:'ป.พ.พ. บรรพ 1 หมวด 4 การแสดงเจตนา',
+    law:`มาตรา ๑๖๙ (ส่วนถอนการแสดงเจตนา)
+
+ถ้าผู้แสดงเจตนาได้ถอนการแสดงเจตนานั้น
+ก่อน หรือพร้อมกันกับที่การแสดงเจตนานั้นไปถึงผู้รับ
+
+การแสดงเจตนานั้นตกเป็นอันไร้ผล`,
+    elems:[
+      {t:'ต้องส่งหนังสือ<strong>ถอน</strong>ไปถึงผู้รับ<strong>ก่อน</strong>หนังสือแสดงเจตนา',s:['เช่น โทรบอกถอนก่อนจดหมายถึง']},
+      {t:'หรือหนังสือถอน<strong>ถึงพร้อมกัน</strong>กับหนังสือแสดงเจตนา',s:[]},
+      {t:'ถ้าหนังสือแสดงเจตนาถึงก่อน → <strong>ถอนไม่ได้แล้ว</strong> นิติกรรมมีผลแล้ว',s:[]},
+    ],
+    note:'สูตรจำ: "ถอนก่อนถึง = ยังไม่มีผล | ถอนหลังถึง = สายเกินไป ถอนไม่ได้"',
+    pills:[{c:'r-valid',l:'ถอนก่อน/พร้อมกัน = ไร้ผล'},{c:'r-special',l:'ถอนช้า = นิติกรรมมีผลแล้ว'}],
+    rn:'หลักการ: เมื่อการแสดงเจตนา<strong>ไปถึง</strong>ผู้รับแล้ว (ม.169 ว.1) ก็มีผลผูกพันแล้ว จะถอนได้ต้องรีบก่อนที่จดหมาย/อีเมลจะถึงมือผู้รับ'
+  },
+};
+
+/* ===== OPEN MODAL ===== */
+function openModal(k){
+  const d=D[k]; if(!d) return;
+  const b=document.getElementById('mBadge');
+  b.textContent=d.badge; b.style.color=d.bc; b.style.background=d.bb; b.style.border='1px solid '+d.bc;
+  document.getElementById('mTitle').textContent=d.title;
+  document.getElementById('mSub').textContent=d.sub;
+
+  let h='';
+  // Law
+  h+=`<div class="modal-sec law-box">
+    <div class="modal-sec-title" style="color:var(--gold)">📋 ตัวบทกฎหมาย</div>
+    <div class="law-text">${d.law}</div>
+  </div>`;
+  // Elements
+  let el='<ol>';
+  d.elems.forEach(e=>{
+    el+=`<li>${e.t}`;
+    if(e.s.length){el+='<ul class="sub-list">'; e.s.forEach(s=>el+=`<li>${s}</li>`); el+='</ul>';}
+    el+='</li>';
+  });
+  el+='</ol>';
+  if(d.note) el+=`<div class="formula-note">💡 ${d.note}</div>`;
+  h+=`<div class="modal-sec elem-box"><div class="modal-sec-title" style="color:var(--blue)">🔍 องค์ประกอบสำคัญ</div>${el}</div>`;
+  // Result
+  let pills=d.pills.map(p=>`<span class="r-pill ${p.c}">${p.l}</span>`).join('');
+  h+=`<div class="modal-sec result-box">
+    <div class="modal-sec-title" style="color:var(--orange)">⚖️ ผลทางกฎหมาย</div>
+    <div style="margin-bottom:8px">${pills}</div>
+    <div class="result-note">${d.rn}</div>
+  </div>`;
+
+  document.getElementById('mBody').innerHTML=h;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeBg(e){ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
